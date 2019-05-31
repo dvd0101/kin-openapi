@@ -132,6 +132,18 @@ func (router *Router) AddRoute(route *Route) error {
 	return router.node().Add(method+" "+path, router, nil)
 }
 
+// AddServer adds a new server in the router
+func (router *Router) AddServer(server *openapi3.Server) error {
+	swagger := router.swagger
+	for _, srv := range swagger.Servers {
+		if srv.URL == server.URL {
+			return errors.New("server already present")
+		}
+	}
+	swagger.Servers = append(swagger.Servers, server)
+	return nil
+}
+
 func (router *Router) node() *pathpattern.Node {
 	root := router.pathNode
 	if root == nil {
